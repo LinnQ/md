@@ -55,6 +55,8 @@ written by you). Some functions are executed for every request (for example,
 a function that logs all requests), and other functions are only executed sometimes (for example, a function that handles only the homepage or the 404
 page). Express has many utilities for partitioning these smaller request handler functions.
 
+- Express 让你写许多小的函数（许多可能是第三方函数，不需要你亲自写）而不是一个庞大的请求处理函数。有些函数在每次请求时都会执行（例如，某个函数记录了所有请求），有些自二十在某些时候才执行（例如，某个函数仅处理主页或者404页面）。Express有许多工具，来对这些较小的请求处理函数进行分区隔离。
+
 ■ Request handler functions take two arguments: the request and the response.
 Node’s HTTP server provides some functionality; for example, Node.js’s HTTP
 server lets you extract the browser’s user agent in one of its variables. Express
@@ -62,6 +64,8 @@ augments this by adding extra features such as easy access to the incoming
 request’s IP address and improved parsing of URLs. The response object also
 gets beefed up; Express adds things like the sendFile method, a one-line command that translates to about 45 lines of complicated file code. This makes it
 easier to write these request handler functions.
+
+- 请求处理函数获取两个参数：request 和 response。Node.js的HTTP服务器提供
 
 Instead of managing one monolithic request handler function with verbose Node.js
 APIs, you write multiple small request handler functions that are made more pleasant
