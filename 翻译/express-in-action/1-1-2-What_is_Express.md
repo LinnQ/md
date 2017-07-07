@@ -1,67 +1,53 @@
-# 1.2 What is Express?
+# 1.2 Express 是什么？
 
-Express is a relatively small framework that sits on top of Node.js’s web server functionality to simplify its APIs and add helpful new features. It makes it easier to organize your application’s functionality with middleware and routing; it adds helpful
-utilities to Node.js’s HTTP objects; it facilitates the rendering of dynamic HTML views;
-it defines an easily implemented extensibility standard. This book explores those features in a lot more depth, so all of that lingo will be demystified soon.
 
-### 1.2.1 The functionality in Node.js
-When you’re creating a web application (to be more precise, a web server) in
-Node.js, you write a single JavaScript function for your entire application. This function listens to a web browser’s requests, or the requests from a mobile application
-consuming your API, or any other client talking to your server. When a request
-comes in, this function will look at the request and determine how to respond. If you
-visit the homepage in a web browser, for example, this function could determine
-that you want the homepage and it will send back some HTML. If you send a message
-to an API endpoint, this function could determine what you want and respond with
-JSON (for example).
+[Express is a relatively small framework that sits on top of Node.js’s web server functionality to simplify its APIs and add helpful new features]Express 是一个位于Node.js的web服务功能顶层的，相对较小的框架。简化了它的API并且添加了有用的新特性。它通过中间件和路由使你更加容易管理应用的功能；它向Node.js的HTTP对象加入了有用的工具；它使得渲染动态HTML视图更加容易。
 
-Imagine you’re writing a web application that tells users the time and time zone on
-the server. It will work like this:
-■ If the client requests the homepage, your application will return an HTML page
-showing the time.
-■ If the client requests anything else, your application will return an HTTP 404
-“Not Found” error and some accompanying text.
-If you were building your application on top of Node.js without Express, a client hitting your server might look like figure 1.2
+
+
+### 1.2.1 [The functionality in Node.js] Node.js中的功能性（或者是函数性？）
+
+当你正在创建一个Node.js web应用（更准确地说，一个web服务器），写了一个JavaScript函数作为整个应用。这个函数监听web浏览器的请求，或者这个请求是来自移动应用的，来使用你的API，又或者其他与你的服务器对话的客户端。当一个请求到来的时候，这个函数会接受这个请求并考虑如何响应。举例，如果你在web浏览器查看主页，这个函数会判断你想要主页，并且它会返回一些HTML。如果你向终端API发送了一个消息，这个函数会考虑你想要什么并且返回JSON数据（举例）。
+
+
+想象一下你正在写一个告诉人们时刻和时区的web应用。它会像下面这样工作：
+
+- 如果客户端请求主页，你的应用会返回一个HTML，展示时间。
+- 如果客户端请求其他的，你的应用将返回一个HTTP 404 “Not Found” 错误和一些附加文本。
+
+如果你在Node.js之上编写你的应用，没有使用Express的话，客户端请求你的服务器时，就像figure 1.2展示的那样
+
 
 ![Figure1.2](image/Figure1.2.png)
 
 
-
-The JavaScript function that processes browser requests in your application is called a
-request handler. There’s nothing too special about this; it’s a JavaScript function that
-takes the request, figures out what to do, and responds. Node.js’s HTTP server handles
-the connection between the client and your JavaScript function so that you don’t have
-to handle tricky network protocols.
+你的应用上处理浏览器请求的JavaScript函数被称作（request handler）请求处理器。 它没有什么太特别的地方；它是一个获取请求，然后弄清楚需要做什么，然后响应请求的这么一个函数。Node.js的HTTP服务器处理了客户端和你的JavaScript函数之间的连接，因此你无须处理那些棘手的网络协议。
 
 
-In code, it’s a function that takes two arguments: an object that represents the
-request and an object that represents the response. In your time/time zone application, the request handler function might check for the URL that the client is requesting. If they’re requesting the homepage, the request handler function should respond
-with the current time in an HTML page. Otherwise, it should respond with a 404.
-Every Node.js application is just like this: it’s a single request handler function
-responding to requests. Conceptually, it’s pretty simple.
+在代码层面，就是一个函数，取得了两个参数：一个表示请求的对象，和一个表示响应的对象。在你的 时刻/时区应用里，请求处理函数可能会检查客户端请求的URL。如果你正在请求主页，请求处理函数应该响应一个包含当前时刻的HTML页面。否则，它应该返回404。所有的Node.js应用都像这样：一个单独的请求处理函数，去响应请求。概念上讲，它相当简单。
 
 
-The problem is that the Node.js APIs can get complex. Want to send a single JPEG
-file? That’ll be about 45 lines of code. Want to create reusable HTML templates? Figure out how to do it yourself. Node.js’s HTTP server is powerful, but it’s missing a lot
-of features that you might want if you were building a real application.
+问题在于Node.js的API会很复杂。想要发送一个JPEG文件？那大概是45行代码。想要创建一个可重用的的HTML模板？想想如何自己实现。Node.js的HTTP服务器很强大，但是如果你想编写一个实际应用的话，它少了很多你可能需要的特性。
 
 
-Express was born to make it easier to write web applications with Node.js.
+Express就是为了让编写Node.js web应用更简单而生的。
 
 
-### 1.2.2 What Express adds to Node.js
+### 1.2.2 Express对Node.js增加了什么
 
-In broad strokes, Express adds two big features to the Node.js HTTP server:
-■ It adds a number of helpful conveniences to Node.js’s HTTP server, abstracting
-away a lot of its complexity. For example, sending a single JPEG file is fairly complex in raw Node.js (especially if you have performance in mind); Express
-reduces it to one line.
-■ It lets you refactor one monolithic request handler function into many smaller
-request handlers that handle only specific bits and pieces. This is more maintainable and more modular.
-In contrast to figure 1.2, figure 1.3 shows how a request would flow through an Express
-application
+
+粗略地讲，Express为Node.js增加了两大特性：
+- 它增加了很多便利性的东西到Node.js的HTTP服务器，将很多复杂性抽象化了。例如，发送一个JPEG文件在原生Node.js中相当复杂（[(especially if you have performance in mind]尤其是如果你还需要考虑性能的时候）;Express将它减少到一行。
+- 它让你将一个庞大的请求处理函数重构成许多小的请求处理器，它们只处理指定的一些细节。这样更加可维护也更加模块化。
+
+
+对比figure 1.2，figure 1.3展示了一个请求将如何经过一个Express应用。
 
 ![Figure1.3](image/Figure1.3.png)
 
-Figure 1.3 might look more complicated, but it’s much simpler for you as the developer. There are essentially two things going on here:
+
+Figure 1.3 可能看着更加复杂了，但对于作为开发者的你来说，这（开发起来）简单多了。实际上这里发生了两件事：
+
 
 ■ Rather than one large request handler function, Express has you writing
 many smaller functions (many of which can be third-party functions and not
